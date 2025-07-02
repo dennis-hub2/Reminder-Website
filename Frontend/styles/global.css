@@ -1,0 +1,27 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+:root {
+	--primary-blue: #4a90e2;
+	--primary-hover: #5383b9;
+	--secondary-hover: #ca1616;
+	--light-grey: #f5f7fa;
+	--text-primary: #333;
+	--text-secondary: #888;
+	--white: #ffffff;
+	--border-color: #e0e0e0;
+}
+
+body {
+	margin: 0;
+	font-family: "Poppins", sans-serif;
+	background-color: var(--light-grey);
+	color: var(--text-primary);
+}
+
+* {
+	box-sizing: border-box;
+}
+a {
+	text-decoration: none;
+	color: inherit;
+}

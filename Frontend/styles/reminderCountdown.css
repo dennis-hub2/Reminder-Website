@@ -1,0 +1,73 @@
+.reminder-card {
+	background-color: #ffffff;
+	border-radius: 8px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	padding: 20px;
+	width: 300px;
+	font-family: Arial, sans-serif;
+	text-align: center;
+}
+
+.reminder-header {
+	display: flex;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.avatar {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	margin-right: 12px;
+}
+
+.header-title {
+	font-size: 16px;
+	color: #333;
+	font-weight: bold;
+}
+
+
+
+.checkbox-container {
+	position: relative;
+	width: 24px;
+	height: 24px;
+	margin-right: 12px;
+	flex-shrink: 0;
+}
+
+#reminder-checkbox {
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+.checkbox-label {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 24px;
+	height: 24px;
+	background-color: transparent;
+	border: 2px solid #ffffff;
+	border-radius: 50%;
+	cursor: pointer;
+	box-sizing: border-box;
+}
+
+#reminder-checkbox:checked + .checkbox-label {
+	background-color: #ffffff;
+}
+
+.reminder-text {
+	font-size: 16px;
+	flex-grow: 1;
+	text-align: left;
+}
+
+.countdown-timer {
+	font-size: 48px;
+	font-weight: bold;
+	color: #333;
+}

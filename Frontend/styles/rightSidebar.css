@@ -1,0 +1,101 @@
+.right-sidebar {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.profile-section,
+.reminders-overview {
+	background-color: var(--white);
+	border-radius: 12px;
+	padding: 20px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+	text-align: center;
+}
+
+.profile-avatar {
+	width: 80px;
+	height: 80px;
+	border-radius: 50%;
+	margin-bottom: 10px;
+}
+
+.profile-section h3 {
+	margin: 0;
+	font-size: 18px;
+}
+
+.profile-section p {
+	margin: 5px 0 15px;
+	color: var(--text-secondary);
+}
+
+.profile-stats {
+	display: flex;
+	justify-content: space-around;
+	text-align: center;
+}
+
+.profile-stats span {
+	display: block;
+}
+
+.profile-stats span:first-child {
+	font-weight: 600;
+	font-size: 18px;
+}
+
+.profile-stats span:last-child {
+	color: var(--text-secondary);
+	font-size: 12px;
+}
+
+.overview-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	text-align: left;
+}
+
+.overview-header h4 {
+	margin: 0;
+}
+
+.time {
+	text-align: left;
+	color: var(--text-secondary);
+	margin: 10px 0;
+}
+
+.reminders-overview ul {
+	list-style: none;
+	padding: 0;
+	margin: 15px 0 0;
+	text-align: left;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.reminders-overview li {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	font-weight: 500;
+}
+
+.dot {
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+}
+
+.dot.yellow {
+	background-color: #f8b400;
+}
+.dot.pink {
+	background-color: #e91e63;
+}
+.dot.blue {
+	background-color: #03a9f4;
+}

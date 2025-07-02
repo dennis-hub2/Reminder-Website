@@ -1,0 +1,137 @@
+.login-page-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 100vh;
+	background-color: var(--light-grey);
+}
+
+.login-box {
+	background-color: var(--white);
+	padding: 40px;
+	border-radius: 12px;
+	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+	width: 400px;
+	max-width: 90%;
+	text-align: center;
+}
+
+.login-box h2 {
+	margin-bottom: 30px;
+	color: var(--text-primary);
+	font-size: 28px;
+}
+
+.input-group {
+	margin-bottom: 20px;
+	text-align: left;
+}
+
+.input-group label {
+	display: block;
+	margin-bottom: 8px;
+	font-weight: 500;
+	color: var(--text-primary);
+}
+
+.input-group input {
+	width: 100%;
+	padding: 12px 15px;
+	border: 1px solid var(--border-color);
+	border-radius: 8px;
+	font-size: 16px;
+	background-color: var(--light-grey);
+	font-family: "Poppins", sans-serif;
+}
+
+.input-group input:focus {
+	outline: none;
+	border-color: var(--primary-blue);
+	box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+}
+
+.auth-button {
+	width: 100%;
+	padding: 15px;
+	background-color: var(--primary-blue);
+	color: var(--white);
+	border: none;
+	border-radius: 8px;
+	font-size: 18px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+	margin-top: 10px;
+}
+
+.auth-button:hover {
+	background-color: #3a7bd2;
+}
+
+.divider {
+	margin: 30px 0;
+	position: relative;
+	text-align: center;
+}
+
+.divider::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 50%;
+	border-top: 1px solid var(--border-color);
+	z-index: 1;
+}
+
+.divider span {
+	background-color: var(--white);
+	padding: 0 15px;
+	position: relative;
+	z-index: 2;
+	color: var(--text-secondary);
+	font-size: 14px;
+}
+
+.social-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	padding: 12px 15px;
+	border: 1px solid var(--border-color);
+	border-radius: 8px;
+	font-size: 16px;
+	font-weight: 500;
+	cursor: pointer;
+	background-color: var(--white);
+	color: var(--text-primary);
+	margin-bottom: 15px;
+	transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.social-button:hover {
+	background-color: #f0f2f5;
+	border-color: #c9ccd0;
+}
+
+.social-button svg {
+	margin-right: 10px;
+	font-size: 22px;
+}
+
+.outlook-button .outlook-icon {
+	color: #0078d4; /* Outlook brand color */
+}
+
+.toggle-auth {
+	margin-top: 30px;
+	color: var(--text-secondary);
+	font-size: 15px;
+}
+
+.toggle-auth span {
+	color: var(--primary-blue);
+	font-weight: 600;
+	cursor: pointer;
+}
