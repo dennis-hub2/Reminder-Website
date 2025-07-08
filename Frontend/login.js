@@ -1,3 +1,5 @@
+import { auth } from "./firebase-config.js";
+
 document.addEventListener("DOMContentLoaded", function () {
 	const authForm = document.getElementById("auth-form");
 	const toggleAuthLink = document.getElementById("toggle-auth");
@@ -5,6 +7,8 @@ document.addEventListener("DOMContentLoaded", function () {
 	const h2 = loginBox.querySelector("h2");
 	const authButton = authForm.querySelector(".auth-button");
 	const confirmPasswordGroup = document.getElementById("confirm-password-group");
+	const googleButton = document.querySelector(".google-button");
+	const outlookButton = document.querySelector(".outlook-button");
 
 	let isLogin = true;
 
@@ -16,7 +20,6 @@ document.addEventListener("DOMContentLoaded", function () {
 		h2.textContent = isLogin ? "Login" : "Sign Up";
 		authButton.textContent = isLogin ? "Login" : "Sign Up";
 
-		// Update the toggle link text
 		const span = toggleAuthLink.querySelector("span");
 		if (isLogin) {
 			toggleAuthLink.firstChild.textContent = "Don't have an account? ";
@@ -26,25 +29,68 @@ document.addEventListener("DOMContentLoaded", function () {
 			span.textContent = "Login";
 		}
 
-		// Show or hide the confirm password field
 		confirmPasswordGroup.style.display = isLogin ? "none" : "block";
 	}
 
-	// Attach event listener to the parent <p> tag
 	toggleAuthLink.addEventListener("click", toggleAuthMode);
 
-	// Handle form submission
+	// Handle form submission for email/password
 	authForm.addEventListener("submit", function (e) {
 		e.preventDefault();
+		const email = document.getElementById("email").value;
+		const password = document.getElementById("password").value;
 
-		// --- THIS IS THE KEY PART ---
-		// 1. Simulate a successful authentication
-		console.log("Authentication successful!");
+		if (isLogin) {
+			// Login user
+			auth
+				.signInWithEmailAndPassword(email, password)
+				.then(userCredential => {
+					window.location.href = "index.html";
+				})
+				.catch(error => {
+					alert(error.message);
+				});
+		} else {
+			// Sign up user
+			const confirmPassword = document.getElementById("confirm-password").value;
+			if (password !== confirmPassword) {
+				alert("Passwords do not match.");
+				return;
+			}
+			auth
+				.createUserWithEmailAndPassword(email, password)
+				.then(userCredential => {
+					window.location.href = "index.html";
+				})
+				.catch(error => {
+					alert(error.message);
+				});
+		}
+	});
 
-		// 2. Set a flag in localStorage to remember the user is logged in
-		localStorage.setItem("isLoggedIn", "true");
+	// Handle Google Sign-In
+	googleButton.addEventListener("click", () => {
+		const provider = new firebase.auth.GoogleAuthProvider();
+		auth
+			.signInWithPopup(provider)
+			.then(result => {
+				window.location.href = "index.html";
+			})
+			.catch(error => {
+				alert(error.message);
+			});
+	});
 
-		// 3. Redirect to the main application page
-		window.location.href = "index.html";
+	// Handle Outlook/Microsoft Sign-In
+	outlookButton.addEventListener("click", () => {
+		const provider = new firebase.auth.OAuthProvider("microsoft.com");
+		auth
+			.signInWithPopup(provider)
+			.then(result => {
+				window.location.href = "index.html";
+			})
+			.catch(error => {
+				alert(error.message);
+			});
 	});
 });
