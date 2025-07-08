@@ -1,195 +1,330 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link
-			rel="stylesheet"
-			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-			integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
-			crossorigin="anonymous"
-			referrerpolicy="no-referrer" />
-		<title>Reminder Dashboard</title>
 
-		<link rel="stylesheet" href="styles/addReminder.css" />
-		<link rel="stylesheet" href="styles/calender.css" />
-		<link rel="stylesheet" href="styles/header.css" />
-		<link rel="stylesheet" href="styles/loginPage.css" />
-		<link rel="stylesheet" href="styles/reminderCountdown.css" />
-		<link rel="stylesheet" href="styles/global.css" />
-		<link rel="stylesheet" href="styles/reminders.css" />
-		<link rel="stylesheet" href="styles/rightSidebar.css" />
-		<link rel="stylesheet" href="styles/sideBar.css" />
-	</head>
-	<body>
-		<div style="display: flex; height: 100vh">
-			<!-- Sidebar (Moved to the left) -->
-			<aside class="sidebar">
-				<div class="sidebar-header">
-					<div class="logo">OSPReminder</div>
-				</div>
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+		integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+		crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<title>Reminder Dashboard</title>
 
-				<h3>Reminders</h3>
-				<!-- Navigation items for Reminders -->
-				<nav class="sidebar-nav">
-					<a href="#Today" class="nav-item"><i class="fa-solid fa-bell"></i><span>Today</span></a>
-					<a href="#upcoming" class="nav-item"><i class="fa-solid fa-bell"></i><span>Upcoming</span></a>
-					<a href="#Past" class="nav-item"><i class="fa-solid fa-bell"></i><span>Past</span></a>
-				</nav>
+	<link rel="stylesheet" href="styles/addReminder.css" />
+	<link rel="stylesheet" href="styles/calendar.css" />
+	<link rel="stylesheet" href="styles/header.css" />
+	<link rel="stylesheet" href="styles/loginPage.css" />
+	<link rel="stylesheet" href="styles/reminderCountdown.css" />
+	<link rel="stylesheet" href="styles/global.css" />
+	<link rel="stylesheet" href="styles/reminders.css" />
+	<link rel="stylesheet" href="styles/rightSidebar.css" />
+	<link rel="stylesheet" href="styles/sideBar.css" />
+	<style>
+		/* Styles for the modal */
+		.modal {
+			display: none;
+			position: fixed;
+			z-index: 1000;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			overflow: auto;
+			background-color: rgba(0, 0, 0, 0.4);
+		}
 
-				<div class="add-view-section">
-					<button class="add-view-btn">View Reminders</button>
-				</div>
+		.modal-content {
+			background-color: #fefefe;
+			margin: 15% auto;
+			padding: 20px;
+			border: 1px solid #888;
+			width: 80%;
+			max-width: 500px;
+			border-radius: 10px;
+		}
 
-				<div class="sidebar-divider"><hr /></div>
+		.close-button {
+			color: #aaa;
+			float: right;
+			font-size: 28px;
+			font-weight: bold;
+		}
 
-				<div class="sidebar-menu">
-					<h3>ToDo List</h3>
-					<!-- Navigation items for ToDo List -->
-					<a href="#Task" class="nav-item"><i class="fa-solid fa-bell"></i> <span>Task</span> </a>
-					<a href="#Completed" class="nav-item"> <i class="fa-solid fa-bell"></i><span>Completed</span> </a>
-					<a href="#Archived" class="nav-item"> <i class="fa-solid fa-bell"></i><span>Archived</span> </a>
-				</div>
-				<div class="add-view-section">
-					<button class="add-view-btn">View Tasks</button>
-				</div>
+		.close-button:hover,
+		.close-button:focus {
+			color: black;
+			text-decoration: none;
+			cursor: pointer;
+		}
 
-				<div class="sidebar-divider"><hr /></div>
+		/* Styles for the mini-calendar on the dashboard */
+		#mini-calendar-container {
+			background-color: #fff;
+			padding: 15px;
+			border-radius: 8px;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+			margin-bottom: 20px;
+		}
 
-				<div class="Categories">
-					<h3>Categories</h3>
-					<nav class="sidebar-categories">
-						<a href="#Work" class="nav-item"><i class="fa-solid fa-bell"></i><span>Work</span> </a>
-						<a href="#Personal" class="nav-item"><i class="fa-solid fa-bell"></i> <span>Personal</span> </a>
-						<a href="#Shopping" class="nav-item"><i class="fa-solid fa-bell"></i><span>Shopping</span> </a>
-						<a href="#Health" class="nav-item"><i class="fa-solid fa-bell"></i><span>Health</span> </a>
-						<a href="#Travel" class="nav-item"><i class="fa-solid fa-bell"></i><span>Travel</span> </a>
-						<a href="#Other" class="nav-item"><i class="fa-solid fa-bell"></i><span>others</span> </a>
-					</nav>
-				</div>
-			</aside>
+		#mini-calendar-container #monthDisplay {
+			font-size: 20px;
+		}
 
-			<!-- Main Content Area -->
-			<div style="flex: 1; display: flex; flex-direction: column">
-				<!-- Header -->
-				<header class="header">
-					<div class="header-left">
-						<h2>Reminders</h2>
-					</div>
-					<div class="search-bar">
-						<input type="text" placeholder="search for reminders/task..." />
-					</div>
-					<div class="header-right">
-						<img src="" alt="User" class="user-avatar" />
-						<button id="logout-button" class="logout-btn">Logout</button>
-					</div>
-				</header>
+		#mini-calendar-container .day {
+			min-height: 40px;
+			padding: 5px;
+			font-size: 14px;
+		}
 
-				<!-- Main Content Grid -->
-				<main style="display: flex; flex: 1; padding: 50px; gap: 50px; justify-content: center">
-					<!-- Left Column -->
-					<div style="flex: 2; display: flex; flex-direction: column; gap: 20px">
-						<!-- Calendar Component -->
-						<div class="app">
-							<div class="react-calendar">
-								<!-- Calendar content can be dynamically generated or static -->
-							</div>
-						</div>
+		#mini-calendar-container #weekdays {
+			grid-template-columns: repeat(7, 1fr);
+			text-align: center;
+			font-weight: bold;
+			color: #555;
+			padding-bottom: 10px;
+			border-bottom: 2px solid #f0f0f0;
+			display: grid;
+		}
+	</style>
+</head>
 
-						<!-- Reminders Component -->
-						<div class="reminders-list-container">
-							<div class="reminders-header">
-								<h3>Reminders</h3>
-							</div>
-							<div class="reminders-list">
-								<!-- This list will be populated by reminders.js -->
-							</div>
-						</div>
-					</div>
-
-					<!-- Right Column -->
-					<div style="flex: 1; display: flex; flex-direction: column; gap: 20px">
-						<!-- Right Sidebar Component -->
-						<div class="right-sidebar">
-							<!-- Reminder Countdown -->
-							<div class="reminder-card">
-								<div class="reminder-header">
-									<span class="header-title">Upcoming Reminders</span>
-								</div>
-								<div class="reminder-item">
-									<div class="checkbox-container">
-										<input type="checkbox" id="reminder-checkbox" />
-										<label for="reminder-checkbox" class="checkbox-label" id=""></label>
-									</div>
-									<span class="reminder-text">"....."</span>
-								</div>
-								<div class="countdown-timer"></div>
-							</div>
-
-							<!-- Overview -->
-							<div class="reminders-overview">
-								<div class="overview-header">
-									<h4>Reminders</h4>
-								</div>
-								<p class="time"></p>
-
-								<!-- the reminder will be display according the their priorities -->
-								<!-- should display only the title -->
-								<ul>
-									<li><span class="dot yellow"></span>Morning page</li>
-									<li><span class="dot pink"></span>Groceries</li>
-									<li><span class="dot blue"></span>Reality show</li>
-								</ul>
-							</div>
-						</div>
-
-						<!-- Add Reminder Component -->
-						<div class="add-reminder-form">
-							<h4>Add Reminders</h4>
-							<form>
-								<div class="form-group">
-									<input type="text" placeholder="Title" />
-								</div>
-								<div class="form-group">
-									<input type="text" placeholder="Notes" />
-								</div>
-								<div class="form-group">
-									<input type="date" placeholder="Date" />
-								</div>
-								<div class="form-group">
-									<input type="time" placeholder="Time" />
-								</div>
-								<div>
-									<label for="Priority" id="">Priority</label>
-
-									<select name="Priority" id="Priority">
-										<option value="High">High</option>
-										<option value="medium">Medium</option>
-										<option value="low">Low</option>
-									</select>
-								</div>
-
-								<div>
-									<label for="Category" id="">Category</label>
-
-									<select name="Categories" id="Categories">
-										<option value="work">Work</option>
-										<option value="Personal">Personal</option>
-										<option value="shopping">Shopping</option>
-										<option value="health">Health</option>
-										<option value="travel">Travel</option>
-										<option value="others">Others</option>
-									</select>
-								</div>
-								<button type="submit" class="submit-btn">Add</button>
-							</form>
-						</div>
-					</div>
-				</main>
+<body>
+	<div style="display: flex; height: 100vh">
+		<!-- Sidebar (Moved to the left) -->
+		<aside class="sidebar">
+			<div class="sidebar-header">
+				<div class="logo">OSPReminder</div>
 			</div>
-		</div>
 
-		<!-- JavaScript Files -->
-		<script src="./index.js"></script>
-	</body>
+			<h3>Reminders</h3>
+			<!-- Navigation items for Reminders -->
+			<nav class="sidebar-nav">
+				<a href="calendar.html" class="nav-item"><i
+						class="fa-solid fa-calendar-alt"></i><span>Calendar</span></a>
+				<a href="#Today" class="nav-item"><i class="fa-solid fa-bell"></i><span>Today</span></a>
+				<a href="#upcoming" class="nav-item"><i class="fa-solid fa-bell"></i><span>Upcoming</span></a>
+				<a href="#Past" class="nav-item"><i class="fa-solid fa-bell"></i><span>Past</span></a>
+			</nav>
+
+			<div class="add-view-section">
+				<button class="add-view-btn" id="view-reminders-btn">View Reminders</button>
+			</div>
+
+			<div class="sidebar-divider">
+				<hr />
+			</div>
+
+			<div class="sidebar-menu">
+				<h3>ToDo List</h3>
+				<!-- Navigation items for ToDo List -->
+				<a href="#Task" class="nav-item"><i class="fa-solid fa-bell"></i> <span>Task</span> </a>
+				<a href="#Completed" class="nav-item"> <i class="fa-solid fa-bell"></i><span>Completed</span> </a>
+				<a href="#Archived" class="nav-item"> <i class="fa-solid fa-bell"></i><span>Archived</span> </a>
+			</div>
+			<div class="add-view-section">
+				<button class="add-view-btn">View Tasks</button>
+			</div>
+
+			<div class="sidebar-divider">
+				<hr />
+			</div>
+
+			<div class="Categories">
+				<h3>Categories</h3>
+				<nav class="sidebar-categories">
+					<a href="#Work" class="nav-item"><i class="fa-solid fa-bell"></i><span>Work</span> </a>
+					<a href="#Personal" class="nav-item"><i class="fa-solid fa-bell"></i> <span>Personal</span> </a>
+					<a href="#Shopping" class="nav-item"><i class="fa-solid fa-bell"></i><span>Shopping</span> </a>
+					<a href="#Health" class="nav-item"><i class="fa-solid fa-bell"></i><span>Health</span> </a>
+					<a href="#Travel" class="nav-item"><i class="fa-solid fa-bell"></i><span>Travel</span> </a>
+					<a href="#Other" class="nav-item"><i class="fa-solid fa-bell"></i><span>others</span> </a>
+				</nav>
+			</div>
+		</aside>
+
+		<!-- Main Content Area -->
+		<div style="flex: 1; display: flex; flex-direction: column">
+			<!-- Header -->
+			<header class="header">
+				<div class="header-left">
+					<h2>Dashboard</h2>
+				</div>
+				<div class="search-bar">
+					<input type="text" placeholder="search for reminders/task..." />
+				</div>
+				<div class="header-right">
+					<img src="" alt="User" class="user-avatar" />
+					<button id="logout-button" class="logout-btn">Logout</button>
+				</div>
+			</header>
+
+			<!-- Main Content Grid -->
+			<main style="display: flex; flex: 1; padding: 50px; gap: 50px; justify-content: center">
+				<!-- Left Column -->
+				<div style="flex: 2; display: flex; flex-direction: column; gap: 20px">
+
+					<!-- Mini Calendar Component -->
+					<div id="mini-calendar-container">
+						<div id="calendar-header">
+							<button id="backButton" class="nav-btn"><i class="fas fa-chevron-left"></i></button>
+							<div id="monthDisplay"></div>
+							<button id="nextButton" class="nav-btn"><i class="fas fa-chevron-right"></i></button>
+						</div>
+						<div id="weekdays">
+							<div>Sun</div>
+							<div>Mon</div>
+							<div>Tue</div>
+							<div>Wed</div>
+							<div>Thu</div>
+							<div>Fri</div>
+							<div>Sat</div>
+						</div>
+						<div id="calendar"></div>
+					</div>
+
+					<!-- Reminders Component -->
+					<div class="reminders-list-container">
+						<div class="reminders-header">
+							<h3>Reminders</h3>
+						</div>
+						<div class="reminders-list">
+							<!-- This list will be populated by index.js -->
+						</div>
+					</div>
+				</div>
+
+				<!-- Right Column -->
+				<div style="flex: 1; display: flex; flex-direction: column; gap: 20px">
+					<!-- Right Sidebar Component -->
+					<div class="right-sidebar">
+						<!-- Reminder Countdown -->
+						<div class="reminder-card">
+							<div class="reminder-header">
+								<span class="header-title">Upcoming Reminders</span>
+							</div>
+							<div class="reminder-item">
+								<div class="checkbox-container">
+									<input type="checkbox" id="reminder-checkbox" />
+									<label for="reminder-checkbox" class="checkbox-label" id=""></label>
+								</div>
+								<span class="reminder-text">"....."</span>
+							</div>
+							<div class="countdown-timer"></div>
+						</div>
+
+						<!-- Overview -->
+						<div class="reminders-overview">
+							<div class="overview-header">
+								<h4>Reminders</h4>
+							</div>
+							<p class="time"></p>
+							<p class="date"></p>
+
+
+							<!-- TO-DO LIST -->
+							<ul>
+								<li><span class="dot yellow"></span>Morning page</li>
+								<li><span class="dot pink"></span>Groceries</li>
+								<li><span class="dot blue"></span>Reality show</li>
+							</ul>
+						</div>
+					</div>
+
+					<!-- Add Reminder or Task Component -->
+					<div class="add-reminder-form">
+						<h4>Add Reminders</h4>
+						<form id="add-reminder-form">
+							<div class="form-group">
+								<input type="text" id="reminder-title" placeholder="Title" required />
+							</div>
+							<div class="form-group">
+								<input type="text" id="reminder-notes" placeholder="Notes" />
+							</div>
+							<div class="form-group">
+								<input type="date" id="reminder-date" placeholder="Date" required />
+							</div>
+							<div class="form-group">
+								<input type="time" id="reminder-time" placeholder="Time" required />
+							</div>
+							<div>
+								<label for="Priority">Priority</label>
+								<select name="Priority" id="reminder-priority">
+									<option value="High">High</option>
+									<option value="medium">Medium</option>
+									<option value="low">Low</option>
+								</select>
+							</div>
+
+							<div>
+								<label for="Category">Category</label>
+								<select name="Categories" id="reminder-category">
+									<option value="work">Work</option>
+									<option value="Personal">Personal</option>
+									<option value="shopping">Shopping</option>
+									<option value="health">Health</option>
+									<option value="travel">Travel</option>
+									<option value="others">Others</option>
+								</select>
+							</div>
+							<button type="submit" class="submit-btn">Add</button>
+						</form>
+					</div>
+				</div>
+			</main>
+		</div>
+	</div>
+
+	<!-- Edit Reminder Modal -->
+	<div id="edit-reminder-modal" class="modal">
+		<div class="modal-content">
+			<span class="close-button">&times;</span>
+			<h4>Edit Reminder</h4>
+			<form id="edit-reminder-form">
+				<input type="hidden" id="edit-reminder-id">
+				<div class="form-group">
+					<input type="text" id="edit-reminder-title" placeholder="Title" required />
+				</div>
+				<div class="form-group">
+					<input type="text" id="edit-reminder-notes" placeholder="Notes" />
+				</div>
+				<div class="form-group">
+					<input type="date" id="edit-reminder-date" placeholder="Date" required />
+				</div>
+				<div class="form-group">
+					<input type="time" id="edit-reminder-time" placeholder="Time" required />
+				</div>
+				<div>
+					<label for="edit-reminder-priority">Priority</label>
+					<select name="Priority" id="edit-reminder-priority">
+						<option value="High">High</option>
+						<option value="medium">Medium</option>
+						<option value="low">Low</option>
+					</select>
+				</div>
+				<div>
+					<label for="edit-reminder-category">Category</label>
+					<select name="Categories" id="edit-reminder-category">
+						<option value="work">Work</option>
+						<option value="Personal">Personal</option>
+						<option value="shopping">Shopping</option>
+						<option value="health">Health</option>
+						<option value="travel">Travel</option>
+						<option value="others">Others</option>
+					</select>
+				</div>
+				<button type="submit" class="submit-btn">Save Changes</button>
+			</form>
+		</div>
+	</div>
+
+
+	<!-- Firebase SDK -->
+	<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+	<!-- Your scripts -->
+	<script type="module" src="./firebase-config.js"></script>
+	<script type="module" src="./index.js"></script>
+</body>
+
 </html>

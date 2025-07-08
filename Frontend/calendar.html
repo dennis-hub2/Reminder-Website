@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reminder Calendar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="styles/global.css" />
+    <link rel="stylesheet" href="styles/header.css" />
+    <link rel="stylesheet" href="styles/calendar.css" />
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <h2>Calendar</h2>
+        </div>
+        <div class="header-right">
+            <a href="index.html" class="back-btn">Back to Dashboard</a>
+            <button id="logout-button" class="logout-btn">Logout</button>
+        </div>
+    </header>
+
+    <!-- Main Calendar Container -->
+    <div id="container">
+        <div id="calendar-header">
+            <button id="backButton" class="nav-btn"><i class="fas fa-chevron-left"></i></button>
+            <div id="monthDisplay"></div>
+            <button id="nextButton" class="nav-btn"><i class="fas fa-chevron-right"></i></button>
+        </div>
+
+        <div id="weekdays">
+            <div>Sunday</div>
+            <div>Monday</div>
+            <div>Tuesday</div>
+            <div>Wednesday</div>
+            <div>Thursday</div>
+            <div>Friday</div>
+            <div>Saturday</div>
+        </div>
+
+        <div id="calendar"></div>
+    </div>
+
+    <!-- Section to display reminders for a selected day -->
+    <div id="reminder-details-container">
+        <h3 id="reminder-details-title">Reminders for Selected Date</h3>
+        <div id="reminder-details-list">
+            <!-- Reminders will be dynamically inserted here -->
+        </div>
+    </div>
+
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+    <!-- Your scripts -->
+    <script type="module" src="./firebase-config.js"></script>
+    <script type="module" src="./calendar.js"></script>
+</body>
+
+</html>
