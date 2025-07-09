@@ -1,0 +1,89 @@
+/* General container styles */
+.container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+/* Filter buttons styling */
+.filter-container {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.filter-btn {
+    padding: 10px 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.filter-btn.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+/* Task list styling */
+.tasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.task-card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.task-card.completed .task-content {
+    text-decoration: line-through;
+    color: #888;
+}
+
+.task-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.task-content input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+}
+
+.task-details p {
+    margin: 0;
+}
+
+.task-description {
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.task-meta {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.task-actions button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    background-color: #f44336;
+    color: white;
+}
+
+.task-actions button:hover {
+    background-color: #da190b;
+}
