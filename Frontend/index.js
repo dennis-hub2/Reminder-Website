@@ -3,8 +3,15 @@ import { auth, db } from "./firebase-config.js";
 document.addEventListener("DOMContentLoaded", function () {
 	// --- Main page elements ---
 	const logoutButton = document.getElementById("logout-button");
-	const addReminderForm = document.getElementById("add-reminder-form");
 	const remindersList = document.querySelector(".reminders-list");
+	const taskOverviewList = document.getElementById("task-overview-list");
+
+	// --- Form elements ---
+	const addReminderForm = document.getElementById("add-reminder-form");
+	const addTaskForm = document.getElementById("add-task-form");
+	const toggleToReminderBtn = document.getElementById("toggle-to-reminder");
+	const toggleToTaskBtn = document.getElementById("toggle-to-task");
+	const formTitle = document.getElementById("form-title");
 
 	// --- Calendar elements ---
 	const calendar = document.getElementById("calendar");
@@ -30,11 +37,31 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 	});
 
+	// --- FORM TOGGLE LOGIC ---
+	if (toggleToReminderBtn && toggleToTaskBtn) {
+		toggleToReminderBtn.addEventListener("click", () => {
+			addReminderForm.style.display = "block";
+			addTaskForm.style.display = "none";
+			formTitle.innerText = "Add Reminder";
+			toggleToReminderBtn.classList.add("active");
+			toggleToTaskBtn.classList.remove("active");
+		});
+
+		toggleToTaskBtn.addEventListener("click", () => {
+			addReminderForm.style.display = "none";
+			addTaskForm.style.display = "block";
+			formTitle.innerText = "Add Task";
+			toggleToTaskBtn.classList.add("active");
+			toggleToReminderBtn.classList.remove("active");
+		});
+	}
+
 	// --- INITIALIZE DASHBOARD ---
 	async function loadDashboard(userId) {
 		await fetchReminderDates(userId);
 		renderCalendar();
 		fetchAndRenderReminders(userId);
+		fetchAndRenderTasks(userId);
 	}
 
 	// --- CALENDAR LOGIC ---
@@ -127,8 +154,8 @@ document.addEventListener("DOMContentLoaded", function () {
 						reminder.notes && reminder.notes.length > 50 ? `${reminder.notes.substring(0, 50)}...` : reminder.notes || "No description.";
 					reminderEl.innerHTML = `
                     <div class="reminder-content">
-                        <h4>${reminder.title}</h4>
-                        <p>${notesSnippet}</p>
+                        <h3>${reminder.title}</h3>
+                        <span>${notesSnippet}</span>
                     </div>
                     <div class="reminder-actions">
                         <button class="edit-btn">Edit</button>
@@ -144,11 +171,51 @@ document.addEventListener("DOMContentLoaded", function () {
 		);
 	}
 
+	// --- TASK LIST LOGIC ---
+	function fetchAndRenderTasks(userId) {
+		db.collection("tasks")
+			.where("userId", "==", userId)
+			.where("completed", "==", false)
+			.orderBy("createdAt", "desc")
+			.limit(3)
+			.onSnapshot(querySnapshot => {
+				taskOverviewList.innerHTML = "";
+				if (querySnapshot.empty) {
+					taskOverviewList.innerHTML = `<li>No upcoming tasks.</li>`;
+					return;
+				}
+				querySnapshot.forEach(doc => {
+					const task = doc.data();
+					const taskId = doc.id;
+					const taskEl = document.createElement("li");
+					taskEl.classList.add("task-item");
+					taskEl.setAttribute("data-id", taskId);
+
+					const checkbox = document.createElement("input");
+					checkbox.type = "checkbox";
+					checkbox.id = `task-${taskId}`;
+					checkbox.checked = task.completed;
+					checkbox.addEventListener("change", () => {
+						db.collection("tasks").doc(taskId).update({ completed: checkbox.checked });
+					});
+
+					const label = document.createElement("label");
+					label.htmlFor = `task-${taskId}`;
+					label.textContent = task.description;
+
+					taskEl.appendChild(checkbox);
+					taskEl.appendChild(label);
+					taskOverviewList.appendChild(taskEl);
+				});
+			});
+	}
+
 	// --- OTHER FUNCTIONALITY (Logout, Add, Edit, Delete) ---
 	if (logoutButton) {
 		logoutButton.addEventListener("click", () => auth.signOut().then(() => (window.location.href = "loginPage.html")));
 	}
 
+	// --- ADD REMINDER ---
 	if (addReminderForm) {
 		addReminderForm.addEventListener("submit", e => {
 			e.preventDefault();
@@ -170,6 +237,32 @@ document.addEventListener("DOMContentLoaded", function () {
 						loadDashboard(user.uid); // Reload dashboard to show new reminder on calendar
 					})
 					.catch(error => console.error("Error adding document: ", error));
+			}
+		});
+	}
+
+	// --- ADD TASK ---
+	if (addTaskForm) {
+		addTaskForm.addEventListener("submit", e => {
+			e.preventDefault();
+			const user = auth.currentUser;
+			if (user) {
+				db.collection("tasks")
+					.add({
+						description: document.getElementById("task-description").value,
+						priority: document.getElementById("task-priority").value,
+						category: document.getElementById("task-category").value,
+						completed: false, // Default status
+						userId: user.uid,
+						createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+					})
+					.then(() => {
+						addTaskForm.reset();
+						console.log("Task added!");
+					})
+					.catch(error => {
+						console.error("Error adding task: ", error);
+					});
 			}
 		});
 	}
@@ -206,30 +299,34 @@ document.addEventListener("DOMContentLoaded", function () {
 		});
 	}
 
-	closeModalButton.addEventListener("click", () => (editModal.style.display = "none"));
+	if (closeModalButton) {
+		closeModalButton.addEventListener("click", () => (editModal.style.display = "none"));
+	}
 	window.addEventListener("click", e => {
 		if (e.target == editModal) {
 			editModal.style.display = "none";
 		}
 	});
 
-	editForm.addEventListener("submit", e => {
-		e.preventDefault();
-		const reminderId = document.getElementById("edit-reminder-id").value;
-		const updatedData = {
-			title: document.getElementById("edit-reminder-title").value,
-			notes: document.getElementById("edit-reminder-notes").value,
-			date: document.getElementById("edit-reminder-date").value,
-			time: document.getElementById("edit-reminder-time").value,
-			priority: document.getElementById("edit-reminder-priority").value,
-			category: document.getElementById("edit-reminder-category").value,
-		};
-		db.collection("reminders")
-			.doc(reminderId)
-			.update(updatedData)
-			.then(() => {
-				editModal.style.display = "none";
-				loadDashboard(auth.currentUser.uid);
-			});
-	});
+	if (editForm) {
+		editForm.addEventListener("submit", e => {
+			e.preventDefault();
+			const reminderId = document.getElementById("edit-reminder-id").value;
+			const updatedData = {
+				title: document.getElementById("edit-reminder-title").value,
+				notes: document.getElementById("edit-reminder-notes").value,
+				date: document.getElementById("edit-reminder-date").value,
+				time: document.getElementById("edit-reminder-time").value,
+				priority: document.getElementById("edit-reminder-priority").value,
+				category: document.getElementById("edit-reminder-category").value,
+			};
+			db.collection("reminders")
+				.doc(reminderId)
+				.update(updatedData)
+				.then(() => {
+					editModal.style.display = "none";
+					loadDashboard(auth.currentUser.uid);
+				});
+		});
+	}
 });

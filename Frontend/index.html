@@ -84,6 +84,49 @@
 			border-bottom: 2px solid #f0f0f0;
 			display: grid;
 		}
+
+		/* Styles for the form toggle buttons */
+		.form-toggle {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 15px;
+		}
+
+		.toggle-btn-group {
+			display: flex;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			overflow: hidden;
+		}
+
+		.toggle-btn {
+			padding: 8px 12px;
+			border: none;
+			background-color: #f0f0f0;
+			cursor: pointer;
+			transition: background-color 0.3s;
+		}
+
+		.toggle-btn.active {
+			background-color: #007bff;
+			color: white;
+		}
+
+		.task-item {
+			display: flex;
+			align-items: center;
+			margin-bottom: 8px;
+		}
+
+		.task-item input[type="checkbox"] {
+			margin-right: 10px;
+		}
+
+		.task-item.completed {
+			text-decoration: line-through;
+			color: #888;
+		}
 	</style>
 </head>
 
@@ -106,7 +149,7 @@
 			</nav>
 
 			<div class="add-view-section">
-				<button class="add-view-btn" id="view-reminders-btn">View Reminders</button>
+				<a href="view-reminders.html" class="add-view-btn">View Reminders</a>
 			</div>
 
 			<div class="sidebar-divider">
@@ -121,7 +164,7 @@
 				<a href="#Archived" class="nav-item"> <i class="fa-solid fa-bell"></i><span>Archived</span> </a>
 			</div>
 			<div class="add-view-section">
-				<button class="add-view-btn">View Tasks</button>
+				<a href="view-tasks.html" class="add-view-btn">View Tasks</a>
 			</div>
 
 			<div class="sidebar-divider">
@@ -131,8 +174,8 @@
 			<div class="Categories">
 				<h3>Categories</h3>
 				<nav class="sidebar-categories">
-					<a href="#Work" class="nav-item"><i class="fa-solid fa-bell"></i><span>Work</span> </a>
 					<a href="#Personal" class="nav-item"><i class="fa-solid fa-bell"></i> <span>Personal</span> </a>
+					<a href="#Work" class="nav-item"><i class="fa-solid fa-bell"></i><span>Work</span> </a>
 					<a href="#Shopping" class="nav-item"><i class="fa-solid fa-bell"></i><span>Shopping</span> </a>
 					<a href="#Health" class="nav-item"><i class="fa-solid fa-bell"></i><span>Health</span> </a>
 					<a href="#Travel" class="nav-item"><i class="fa-solid fa-bell"></i><span>Travel</span> </a>
@@ -214,48 +257,45 @@
 						<!-- Overview -->
 						<div class="reminders-overview">
 							<div class="overview-header">
-								<h4>Reminders</h4>
+								<h4>Task</h4>
 							</div>
-							<p class="time"></p>
-							<p class="date"></p>
-
 
 							<!-- TO-DO LIST -->
-							<ul>
-								<li><span class="dot yellow"></span>Morning page</li>
-								<li><span class="dot pink"></span>Groceries</li>
-								<li><span class="dot blue"></span>Reality show</li>
+							<ul id="task-overview-list">
+								<!-- Tasks will be dynamically inserted here -->
 							</ul>
 						</div>
 					</div>
 
 					<!-- Add Reminder or Task Component -->
 					<div class="add-reminder-form">
-						<h4>Add Reminders</h4>
+						<div class="form-toggle">
+							<h4 id="form-title">Add Reminder</h4>
+							<div class="toggle-btn-group">
+								<button id="toggle-to-reminder" class="toggle-btn active">Reminder</button>
+								<button id="toggle-to-task" class="toggle-btn">Task</button>
+							</div>
+						</div>
+
+						<!-- Reminder Form -->
 						<form id="add-reminder-form">
-							<div class="form-group">
-								<input type="text" id="reminder-title" placeholder="Title" required />
+							<div class="form-group"><input type="text" id="reminder-title" placeholder="Title"
+									required /></div>
+							<div class="form-group"><input type="text" id="reminder-notes" placeholder="Notes" /></div>
+							<div class="form-group"><input type="date" id="reminder-date" placeholder="Date" required />
 							</div>
-							<div class="form-group">
-								<input type="text" id="reminder-notes" placeholder="Notes" />
-							</div>
-							<div class="form-group">
-								<input type="date" id="reminder-date" placeholder="Date" required />
-							</div>
-							<div class="form-group">
-								<input type="time" id="reminder-time" placeholder="Time" required />
+							<div class="form-group"><input type="time" id="reminder-time" placeholder="Time" required />
 							</div>
 							<div>
-								<label for="Priority">Priority</label>
+								<label for="reminder-priority">Priority</label>
 								<select name="Priority" id="reminder-priority">
 									<option value="High">High</option>
 									<option value="medium">Medium</option>
 									<option value="low">Low</option>
 								</select>
 							</div>
-
 							<div>
-								<label for="Category">Category</label>
+								<label for="reminder-category">Category</label>
 								<select name="Categories" id="reminder-category">
 									<option value="work">Work</option>
 									<option value="Personal">Personal</option>
@@ -265,7 +305,34 @@
 									<option value="others">Others</option>
 								</select>
 							</div>
-							<button type="submit" class="submit-btn">Add</button>
+							<button type="submit" class="submit-btn">Add Reminder</button>
+						</form>
+
+						<!-- Task Form (initially hidden) -->
+						<form id="add-task-form" style="display: none;">
+							<div class="form-group">
+								<input type="text" id="task-description" placeholder="Task Description" required />
+							</div>
+							<div>
+								<label for="task-priority">Priority</label>
+								<select name="Priority" id="task-priority">
+									<option value="High">High</option>
+									<option value="medium">Medium</option>
+									<option value="low">Low</option>
+								</select>
+							</div>
+							<div>
+								<label for="task-category">Category</label>
+								<select name="Categories" id="task-category">
+									<option value="work">Work</option>
+									<option value="Personal">Personal</option>
+									<option value="shopping">Shopping</option>
+									<option value="health">Health</option>
+									<option value="travel">Travel</option>
+									<option value="others">Others</option>
+								</select>
+							</div>
+							<button type="submit" class="submit-btn">Add Task</button>
 						</form>
 					</div>
 				</div>
